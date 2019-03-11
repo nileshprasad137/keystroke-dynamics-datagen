@@ -1,8 +1,7 @@
 """
-A simple example of hooking the keyboard on Linux using pyxhook
+Example of hooking the keyboard on Linux using pyxhook
 
-Any key pressed prints out the keys values, program terminates when spacebar
-is pressed.
+Generates JSON for keystroke timings. Refer paper for format.
 """
 from __future__ import print_function
 
