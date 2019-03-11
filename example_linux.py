@@ -11,51 +11,37 @@ import pyxhook
 import time
 import json
 
-password = "Abc."
-keyTimings = dict()
+password = ".tie5Roanl"
+key_timings = dict()
 
 for char in list(password):
     if char.isupper():
         # if character is uppercase, have an additional dict key for corresponding lowercase letter!
-        keyTimings[char.lower()] = {"keyUp": None, "keyDown": None}
+        key_timings[char.lower()] = {"keyUp": None, "keyDown": None}
 
     if char == ".":
-        keyTimings["period"] = {"keyUp": None, "keyDown": None}
+        key_timings["period"] = {"keyUp": None, "keyDown": None}
     else:
-        keyTimings[char] = {"keyUp": None, "keyDown": None}
+        key_timings[char] = {"keyUp": None, "keyDown": None}
 
-keyTimings["Return"] = {"keyUp": None, "keyDown": None}
-# keyTimings["Shift_L"] = {"keyUp": None, "keyDown": None}
-print(keyTimings)
+key_timings["Return"] = {"keyUp": None, "keyDown": None}
+# key_timings["Shift_L"] = {"keyUp": None, "keyDown": None}
 
 
 # This function is called every time a key is pressed down
 def kb_down_event(event):
-    global running
-
     try:
-        keyTimings[event.Key]["keyUp"] = time.time()
+        key_timings[event.Key]["keyUp"] = time.time()
     except KeyError:
         print("This key is not to be recorded : ", event.Key)
-    print("Time currently:", time.time())
-    # If the ascii value matches spacebnvear, terminate the while loop
-    if event.Ascii == 13:
-        running = False
 
 
 # This function is called every time a keypress is released
 def kb_up_event(event):
-    global running
-    # print key info
-    # print(event.Key, " ", event.MessageName)
     try:
-        keyTimings[event.Key]["keyDown"] = time.time()
+        key_timings[event.Key]["keyDown"] = time.time()
     except KeyError:
         print("This key is not to be recorded : ", event.Key)
-    print("Time currently:", time.time())
-    # If the ascii value matches spacebar, terminate the while loop
-    if event.Ascii == 13:
-        running = False
 
 
 # Create hookmanager
@@ -77,7 +63,7 @@ hookman.start()
 #     time.sleep(0.1)
 
 input_pwd = input("Enter the password : ")
-keyTimings["Return"]["keyDown"] = time.time()
+key_timings["Return"]["keyDown"] = time.time()
 is_pwd_correct = False
 if input_pwd == password:
     print("pwd correct!")
@@ -88,40 +74,57 @@ dataset_based_timings["hold_time"] = dict()
 dataset_based_timings["ud_key1_key2"] = dict()
 dataset_based_timings["dd_key1_key2"] = dict()
 
+print(json.dumps(key_timings))
 if is_pwd_correct:
     # Calculate hold time of keys!
-    print("in bool")
     for key in list(password):
         if key == ".":
-            dataset_based_timings["hold_time"]["period"] = keyTimings["period"]["keyDown"]-keyTimings["period"]["keyUp"]
+            dataset_based_timings["hold_time"]["period"] = key_timings["period"]["keyDown"]-key_timings["period"]["keyUp"]
         elif key.isupper():
-            dataset_based_timings["hold_time"][key] = keyTimings[key.lower()]["keyDown"] - keyTimings[key]["keyUp"]
+            try:
+                dataset_based_timings["hold_time"][key] = key_timings[key.lower()]["keyDown"] - key_timings[key]["keyUp"]
+            except Exception:
+                dataset_based_timings["hold_time"][key] = key_timings[key]["keyDown"] - key_timings[key]["keyUp"]
         else:
-            dataset_based_timings["hold_time"][key] = keyTimings[key]["keyDown"]-keyTimings[key]["keyUp"]
+            dataset_based_timings["hold_time"][key] = key_timings[key]["keyDown"]-key_timings[key]["keyUp"]
 
     for key1, key2 in zip(password, password[1:]):
-        print(key1, " ", key2)
         # Calculate ud_k1_k2 and dd_k1_k2
         if key1 == "." or key2 == ".":
-            if key1==".":
+            if key1 == ".":
                 key1 = "period"
             else:
                 key2 = "period"
-            dataset_based_timings["dd_key1_key2"]["DD."+key1+"."+key2] = keyTimings[key2]["keyDown"]-keyTimings[key1]["keyDown"]
-            dataset_based_timings["ud_key1_key2"]["UD." + key1 + "." + key2] = keyTimings[key2]["keyDown"] - \
-                                                                               keyTimings[key1]["keyUp"]
+            dataset_based_timings["dd_key1_key2"]["DD."+key1+"."+key2] = key_timings[key2]["keyDown"] - \
+                                                                         key_timings[key1]["keyDown"]
+            dataset_based_timings["ud_key1_key2"]["UD." + key1 + "." + key2] = key_timings[key2]["keyDown"] - \
+                                                                               key_timings[key1]["keyUp"]
         elif key1.isupper() or key2.isupper():
-            dataset_based_timings["dd_key1_key2"]["DD."+key1+"."+key2] = keyTimings[key2.lower()]["keyDown"] - keyTimings[key1.lower()]["keyDown"]
-            dataset_based_timings["ud_key1_key2"]["UD." + key1 + "." + key2] = keyTimings[key2.lower()]["keyDown"] - \
-                                                                               keyTimings[key1]["keyUp"]
+            try:
+                dataset_based_timings["dd_key1_key2"]["DD." + key1 + "." + key2] = key_timings[key2.lower()]["keyDown"] - \
+                                                                             key_timings[key1.lower()]["keyDown"]
+                dataset_based_timings["ud_key1_key2"]["UD." + key1 + "." + key2] = key_timings[key2.lower()]["keyDown"] - \
+                                                                                   key_timings[key1]["keyUp"]
+            except Exception:
+                dataset_based_timings["dd_key1_key2"]["DD." + key1 + "." + key2] = key_timings[key2]["keyDown"] - \
+                                                                                   key_timings[key1]["keyDown"]
+                dataset_based_timings["ud_key1_key2"]["UD." + key1 + "." + key2] = key_timings[key2]["keyDown"] - \
+                                                                                   key_timings[key1]["keyUp"]
         else:
-            dataset_based_timings["dd_key1_key2"]["DD."+key1+"."+key2] = keyTimings[key2]["keyDown"]-keyTimings[key1]["keyDown"]
-            dataset_based_timings["ud_key1_key2"]["UD." + key1 + "." + key2] = keyTimings[key2]["keyDown"] - \
-                                                                               keyTimings[key1]["keyUp"]
+            dataset_based_timings["dd_key1_key2"]["DD." + key1 + "." + key2] = key_timings[key2]["keyDown"] - \
+                                                                         key_timings[key1]["keyDown"]
+            dataset_based_timings["ud_key1_key2"]["UD." + key1 + "." + key2] = key_timings[key2]["keyDown"] - \
+                                                                               key_timings[key1]["keyUp"]
+
+    dataset_based_timings["hold_time"]["Return"] = key_timings["Return"]["keyDown"] - key_timings["Return"]["keyUp"]
+    dataset_based_timings["ud_key1_key2"]["UD." + list(password)[-1] + ".Return"] = key_timings["Return"]["keyDown"] - \
+                                                                            key_timings[list(password)[-1]]["keyUp"]
+    dataset_based_timings["dd_key1_key2"]["DD." + list(password)[-1] + ".Return"] = key_timings["Return"]["keyDown"] - \
+                                                                            key_timings[list(password)[-1]]["keyDown"]
 
 
 print(json.dumps(dataset_based_timings))
-print(json.dumps(keyTimings))
+
 
 # Close the listener when we are done
 hookman.cancel()
