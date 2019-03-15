@@ -60,7 +60,7 @@ hookman.start()
 
 password_entry_count = 1
 
-while password_entry_count <= 5:
+while password_entry_count <= frequency_password_entry:
 
     input_pwd = input("Enter \'{}\' : ".format(password))
     key_timings["Return"]["keyDown"] = time.time()
@@ -128,10 +128,10 @@ while password_entry_count <= 5:
         dataset_based_timings["dd_key1_key2"]["DD." + list(password)[-1] + ".Return"] = \
             key_timings["Return"]["keyDown"] - key_timings[list(password)[-1]]["keyDown"]
 
+        user_keystroke_timings_list.append(dataset_based_timings)
+
     else:
         print("Password entered was not correct! Please type \'{}\' again !".format(password))
-
-    user_keystroke_timings_list.append(dataset_based_timings)
 
 user_keystroke_timings_json["timings"] = user_keystroke_timings_list
 user_keystroke_timings_json["user"] = user_name
