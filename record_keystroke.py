@@ -35,7 +35,8 @@ def kb_down_event(event):
     try:
         key_timings[event.Key]["keyUp"] = time.time()
     except KeyError:
-        print("This key is not to be recorded : ", event.Key)
+        # print("This key is not to be recorded : ", event.Key)
+        pass
 
 
 # This function is called every time a keypress is released
@@ -43,7 +44,8 @@ def kb_up_event(event):
     try:
         key_timings[event.Key]["keyDown"] = time.time()
     except KeyError:
-        print("This key is not to be recorded : ", event.Key)
+        # print("This key is not to be recorded : ", event.Key)
+        pass
 
 user_name = input("Enter your name: ")
 
