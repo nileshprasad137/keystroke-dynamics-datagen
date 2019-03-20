@@ -10,6 +10,8 @@ import pyxhook
 import time
 import json
 
+from keyboard import _Event
+
 password = ".tie5Roanl"
 frequency_password_entry = 5
 key_timings = dict()
@@ -34,6 +36,10 @@ key_timings["Return"] = {"keyUp": None, "keyDown": None}
 def kb_down_event(event):
     try:
         key_timings[event.Key]["keyUp"] = time.time()
+        if event.Key == "Return":
+            print("key_timings[{}][\"keyUp\"]::{}".format(event.Key, key_timings[event.Key]["keyUp"]))
+
+        # print("key_timings[{}][\"keyUp\"]::{}".format(event.Key,key_timings[event.Key]["keyUp"]))
     except KeyError:
         # print("This key is not to be recorded : ", event.Key)
         pass
@@ -43,6 +49,8 @@ def kb_down_event(event):
 def kb_up_event(event):
     try:
         key_timings[event.Key]["keyDown"] = time.time()
+        if event.Key == "Return":
+            print("key_timings[{}][\"keyDown\"]::{}".format(event.Key, key_timings[event.Key]["keyDown"]))
     except KeyError:
         # print("This key is not to be recorded : ", event.Key)
         pass
@@ -65,7 +73,6 @@ password_entry_count = 1
 while password_entry_count <= frequency_password_entry:
 
     input_pwd = input("Enter \'{}\' : ".format(password))
-    key_timings["Return"]["keyDown"] = time.time()
     is_pwd_correct = False
     if input_pwd == password:
         print("pwd correct!")
@@ -96,6 +103,8 @@ while password_entry_count <= frequency_password_entry:
                 dataset_based_timings["hold_time"][key] = \
                     key_timings[key]["keyDown"]-key_timings[key]["keyUp"]
 
+        # print(json.dumps(key_timings))
+
         for key1, key2 in zip(password, password[1:]):
             # Calculate ud_k1_k2 and dd_k1_k2
             if key1 == "." or key2 == ".":
@@ -124,6 +133,11 @@ while password_entry_count <= frequency_password_entry:
                 dataset_based_timings["ud_key1_key2"]["UD." + key1 + "." + key2] = \
                     key_timings[key2]["keyDown"] - key_timings[key1]["keyUp"]
 
+        time.sleep(1)
+        # print(json.dumps(key_timings))
+        # print("Ret KD :: ",key_timings["Return"]["keyDown"])
+        # print("Ret KU :: ", key_timings["Return"]["keyUp"])
+        # print(key_timings["Return"]["keyDown"] - key_timings["Return"]["keyUp"])
         dataset_based_timings["hold_time"]["Return"] = key_timings["Return"]["keyDown"] - key_timings["Return"]["keyUp"]
         dataset_based_timings["ud_key1_key2"]["UD." + list(password)[-1] + ".Return"] = \
             key_timings["Return"]["keyDown"] - key_timings[list(password)[-1]]["keyUp"]
