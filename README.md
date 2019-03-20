@@ -22,3 +22,9 @@ Refer [this paper](http://www.cs.cmu.edu/~keystroke/) for dataset format!
 
 Run `record_keystroke.py`  to see it in action.
 
+#### Note
+
+This script works only for Linux Based Systems as `pyxhook` is for Linux. `PyHook` or `keyboard` modules can be used for developing relevant scripts for Windows. 
+
+Contributions highly appreciated!
+
