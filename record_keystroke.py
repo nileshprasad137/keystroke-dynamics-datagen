@@ -10,10 +10,9 @@ import pyxhook
 import time
 import json
 
-from keyboard import _Event
 
 password = ".tie5Roanl"
-frequency_password_entry = 1
+frequency_password_entry = 10
 key_timings = dict()
 
 user_keystroke_timings_list = list()
