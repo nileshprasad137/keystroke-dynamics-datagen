@@ -1,5 +1,5 @@
 """
-Keystroke Dynamics Recorder (Production-Grade)
+Keystroke Dynamics Recorder 
 - Uses object-oriented programming (OOP)
 - Compatible with MacOS/Linux (pynput)
 - Stores data in JSON format for ML training
