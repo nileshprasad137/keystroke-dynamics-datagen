@@ -120,5 +120,5 @@ This project is licensed under the **MIT License**. Feel free to use, modify, an
 ---
 
 💡 **Need Help?**
-📧 Contact: **nileshprasad137@github.com**  
+📧 Contact: **nileshprasad137@gmail.com**  
 🚀 **Star this repo if you found it useful!** ⭐
